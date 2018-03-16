@@ -25,6 +25,7 @@ import PlanetType from './planet';
 import SpeciesType from './species';
 import StarshipType from './starship';
 import VehicleType from './vehicle';
+import FeaturedType from './featured';
 
 /**
  * The GraphQL type equivalent of the Film resource
@@ -83,6 +84,12 @@ const FilmType = new GraphQLObjectType({
       'FilmCharacters',
       'characters',
       PersonType,
+    ),
+    featuredConnection: connectionFromUrls(
+      'FilmFeatured',
+      'featured',
+      FeaturedType,
+      ['characters', 'planets', 'vehicles', 'starships', 'species'],
     ),
     planetConnection: connectionFromUrls('FilmPlanets', 'planets', PlanetType),
     created: createdField(),

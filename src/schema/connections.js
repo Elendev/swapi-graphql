@@ -28,6 +28,7 @@ export function connectionFromUrls(
   name: string,
   prop: string,
   type: GraphQLOutputType,
+  props: [string] = [],
 ): GraphQLFieldConfig<*, *> {
   const { connectionType } = connectionDefinitions({
     name,
@@ -58,7 +59,18 @@ full "{ edges { node } }" version should be used instead.`,
     type: connectionType,
     args: connectionArgs,
     resolve: async (obj, args) => {
-      const array = await getObjectsFromUrls(obj[prop] || []);
+
+      if (props.length === 0) {
+        props.push(prop);
+      }
+
+      let array = [];
+
+      for (let currentProp of props) {
+        console.log(obj[currentProp]);
+        array = array.concat(await getObjectsFromUrls(obj[currentProp] || []));
+      }
+
       return {
         ...connectionFromArray(array, args),
         totalCount: array.length,
